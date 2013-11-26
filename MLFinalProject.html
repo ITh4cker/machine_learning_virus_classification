@@ -1,0 +1,713 @@
+<!--
+Google IO 2012/2013 HTML5 Slide Template
+
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahé <lukem@google.com>
+
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ML Final Project</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="Kevin Patrick Westropp">
+  <meta name='description' content="Machine Learning Methods for Virus Classification">
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+</head>
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="logoslide nobackground">
+    <article class="flexbox vcenter">
+      <span><img src="images/depaul.gif">
+        <h1>CSC 578: Machine Learning Final Project</h1>
+      </span>
+    </article>
+  </slide>
+
+  <slide class="title-slide segue nobackground">
+    <aside class="gdbar"><img src="images/depaul_logo.jpg"></aside>
+    <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+    </hgroup>
+  </slide>
+
+  <!-- Slide: Overview of Project/Motivation-->
+  <slide>
+    <hgroup>
+      <h2>Project Motivation</h2>
+      <h3>Can Machine Learning (ML) be used to classify viruses?</h3>
+    </hgroup>
+    <article>
+      <ul class="build">
+        <li>Short Answer = Yes!</li>
+        <li>There have been a number of successful attempts using various machine learning methods to identify, classify and predict viruses:
+          <ul>
+            <li>
+              Using decision trees and SVMs with Hidden Markov Models (HMM) to identifying and classifying the H1N1 influenza virus
+            </li>
+            <li>
+              Using Decision Trees (J48, Random Forests and Rotation Forests) for classifying HIV enzyme structures
+            </li>
+            <li>
+              Using Support Vector Machines (SVM) to predict and classify the Dengue virus
+            </li>
+            <li>
+              Using Alternating Decision Trees (ADT) with the Adaboost Algorithm to identify specific families of viruses
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+  <!-- Slide: Overview of Previous Studies-->
+  <slide>
+    <hgroup>
+      <h2>Previous Studies in Virus Classification</h2>
+      <h3>Initial Background Research</h3>
+    </hgroup>
+    <article class="smaller">
+      <ul>
+        <li>
+          Attaluri, Pavan K., et al. "Applying machine learning techniques to classify H1N1 viral strains occurring in 2009 flu pandemic." <em>BIOT-2009</em> (2009): 21.
+          <center><p>
+            <a href="../finalproject-ML/pdf_articles/Applying_machine_learning_techniques_to_classify_H1N1_viral_strains.pdf"/>pdf</a>
+          </p></center> 
+        </li>
+        <li>
+          Dubey, Anubha, Bhaskar Pant, and Usha Chouhan. "Machine learning model for HIV1 and HIV2 enzyme secondary structure classification." <em>J. Comput. Method. Mol. Design</em> 1.2 (2011): 1-8.
+          <center><p>
+            <a href="../finalproject-ML/pdf_articles/Machine_learning_model_for_HIV1_and_HIV2_enzyme_secondary_structure_classification.pdf"/>pdf</a>
+          </p></center> 
+        </li>
+        <li>
+          Fathima, A. Shameem, and D. Manimeglai. "Predictive Analysis for the Arbovirus-Dengue using SVM Classification." <em>International Journal of Engineering and Technology</em> 2.3 (2012).
+          <center><p>
+            <a href="../finalproject-ML/pdf_articles/Predictive_Analysis_for_the_Arbovirus-Dengue_using_SVM_Classification.pdf"/>pdf</a>
+          </p></center> 
+        </li>
+        <li>
+          Raj, Anil, et al. "Identifying Hosts of Families of Viruses: A Machine Learning Approach." <em>PloS one</em> 6.12 (2011): e27631.
+          <center><p>
+            <a href="../finalproject-ML/pdf_articles/Identifying_Hosts_of_Families_of Viruses.pdf"/>pdf</a>
+          </p></center> 
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+  <!-- Slide: Research Question -->
+  <slide>
+    <hgroup>
+      <h2>Purpose: Research Question</h2>
+      <h3>Which method is the most effective in classifying viruses?</h3>
+    </hgroup>
+    <article>
+      <ul>
+        <li>
+          Motivated by previous studies, I choose to focus on the SVM algorithm and decision trees. 
+        </li>
+        <li>
+          My dataset was specific virus sequences and focused mainly on the dengue viruses. 
+        </li>
+        <li>
+          Performance/Evaluation Criteria:
+          <ul>
+            <li>
+              Low Error Percentage
+            </li>
+            <li>
+              High Success/Classification Percentage
+            </li>
+          </ul>
+        </li>
+        <li>
+          Known Issues in this approach: 
+          <ul>
+            <li>
+              Variation in previous implementations and my implementation
+            </li>
+            <li>
+              Sequence Alignment (More on this later)
+            </li>
+            <li>
+              Basic approach to a very complex field/problem
+            </li>
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+
+  <!-- Overview of Viruses -->
+  <slide>
+    <hgroup>
+      <h2>Background: Overview of Viruses</h2>
+      <h3>Primer on viruses</h3>
+    </hgroup>
+      <article> 
+        <ul>
+          <li>
+            Viruses are small (one-hundredth the size of bacteria) infectious agents.
+          </li>
+          <li>
+            It requires an electron microscope to see them and they weren't witnessed until 1931.
+          </li>
+          <li>
+            They survive by infecting living host cells and replicating their DNA/RNA via their host.
+          </li>
+          <li>
+            The origin of viruses is relativly unknown because of their basic nature, and there are a number of different theories about their origin.
+          </li>
+          <li>
+            The structure of viruses varies widely between different families and strands, some looking like the NASA lunar lander or like a big blob.
+          </li>
+          <li>
+            Even though they exhibit many characteristics of living organizms, they also lack essential characteristics that would classify them as living. 
+          </li> 
+        </ul>  
+        <footer class="source">Source: 
+          <a href="http://en.wikipedia.org/wiki/Virus">Wikipedia</a>
+        </footer>
+      </article>
+  </slide>
+
+  <!-- Image of Virus -->
+  <slide>
+    <hgroup>
+      <h2>Background: Overview of Viruses</h2>
+      <h3>(Cont.) - Image of Herpes virus</h3>
+    </hgroup>
+      <article class="flexbox vcenter">
+        <img src="images/Varicella_(Chickenpox)_Virus_PHIL_1878_lores.jpg" alt="Herpes Virus Image" title="Picture of Herpes Virus">
+        <footer class="source">Source: 
+          <a href="http://phil.cdc.gov/phil/details.asp?pid=1878">Picture</a>
+        </footer>
+      </article>
+  </slide>
+  
+  <!--  Slide: Overview of Virus Classification -->
+  <slide>
+    </aside>
+    <hgroup>
+      <h2>Background: Virus Classification</h2>
+      <h3>Primer on virus classification</h3>
+    </hgroup>
+    <article>
+      <ul>
+        <li>Two Main Types of Classification:
+          <ul>
+            <li>
+              1) International Committe on Taxonomy of Viruses
+            </li>
+            <li>
+              2) Baltimore System of Classification
+            </li>
+          </ul>
+        </li>
+        <li>Key Differences:
+          <ul>
+            <li>ICTV: uses a hierarchical structure (order, family, subfamily) to classify viruses, higher level classification by properties and features of the nature of the virus</li>
+            <li>Baltimore: focuses on classification via DNA structure and combination, categorizes viruses based upon their DNA/RNA makeup and method of replication</li>
+          </ul>
+        </li>
+        <li>This project focuses on Baltimore Classification and DNA sequences specifically but not exclusively.</li>
+      </ul>
+      <footer class="source">Sources:
+        <a href="http://en.wikipedia.org/wiki/Virus_classification">Wikipedia</a> -
+        <a href="http://www.ictvonline.org/virusTaxonomy.asp?version=2012">ICTV: 2012 Virus Taxonomy</a> -
+        <a href="http://www.virology.ws/2009/08/12/simplifying-virus-classification-the-baltimore-system/">Virology Blog</a>
+      </footer>
+    </article>
+  </slide>
+
+  <!-- Slide: Overview of DNA -->
+  <slide>
+    <hgroup>
+      <h2>Background: Overview of DNA</h2>
+      <h3>Primer on DNA and RNA</h3>
+    </hgroup>
+    <article>
+      <ul>
+        <li>Deoxyribonucleic Acid, commonly known as DNA</li>
+        <li>Holds genetic information for all living organisms, also viruses</li>
+          <ul>
+            <li>viruses are not technically living but exist because of living cells</li>
+            <li>viruses need living cells (hosts) in order to replicate their DNA strand</li> 
+          </ul>
+        </li>
+        <li>DNA and it's younger brother RNA are made up of nucleic acid.</li>
+        <li>The Structure of DNA is a double stranded helix which consists of base pairs.</li>
+        <li>Base pairs consist of two nucleotides (Cytosine, Guanine, Adenine and Thymine or Uracil in RNA).</li>
+      </ul>
+      <footer class="source">Sources:
+        <a href="http://en.wikipedia.org/wiki/Dna">Wikipedia: DNA</a> -
+        <a href="http://en.wikipedia.org/wiki/Nucleic_acid">Wikipedia: Nucleic Acid</a> 
+      </footer>
+    </article>
+  </slide>
+
+<!-- Slide: Image of DNA/RNA -->
+  <slide>
+    <hgroup>
+      <h2>Background: Overview of DNA</h2>
+      <h3>(Cont.) - Image of DNA & RNA</h3>
+    </hgroup>
+    <article class="flexbox vcenter">
+      <img src="images/RNA-comparedto-DNA_thymineAndUracilCorrected.png" alt="RNA/DNA Comparision Image" title="Shows Comparison between RNA and DNA structure" width=500 height=500>
+      <footer class="source">Source:
+        <a href="http://www.accessexcellence.org/RC/VL/GG/rna2.html">Picture</a>
+      </footer>
+    </article>
+  </slide>
+
+<!-- Slide: My Method and Approach -->
+  <slide>
+    <hgroup>
+      <h2>Method: My Approach</h2>
+      <h3>Advantages and Disadvantages</h3>
+    </hgroup>
+    <article>
+      <ul>
+        <li>
+          I chose to focus on DNA analysis because of the easy access to NCBI database with nucleotide sequences as well as the background research I had done and general interest in the subject.
+        </li>
+        <li>
+          One of the biggest obstacles in DNA analysis is the issue of alignment of base pairs which creates a computationally intense problem. 
+        </li>
+        <li>
+          To side step this issue I decided to focus my method on the number of words (two letter DNA sequence possibities - AA, BB) in each DNA sequence and count the total number of each word (16 possibilites) in the entire DNA sequence.
+        </li>
+        <li>
+          This approach was also advantageous because it could be applied to both algorithms that I chose to analyze (svm, decision trees) relativily well.
+        </li>
+        <li>
+          The biggest downside is its basic, general and in the end didn't yield good results.
+        </li>
+        <li>
+          My main focus of classification was the 4 types of dengue virus (DEN-1, DEN-2, DEN-3, DEN-4).
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+  <!-- Slide: Image Count of Sequences -->
+  <slide>
+    <hgroup>
+      <h2>Method: My Approach</h2>
+      <h3>(Cont.) Image of Sequence Counts of 2 Letter Words (11 viruses)</h3>
+    </hgroup>
+    <article class="flexbox vcenter">
+      <img src="images/sequencecounts.png" alt="DNA_Sequence_Counts" title="Counts of 2 Letter DNA Words"/>
+    </article>
+  </slide>
+
+
+  <!-- Slide: Support Vector Machine -->
+  <slide>
+    <hgroup>
+      <h2>Method: SVM Algorithm</h2>
+      <h3>SVM in R with e1071</h3>
+    </hgroup>
+    <article class="smaller">
+          <pre class="prettyprint" data-lang="R">
+            tuned <- tune.svm(viruses~., data=trainingframe, gamma = 10^(-6:-1), cost=10^(-1:1))
+            summary(tuned)
+            model <- svm(viruses~., data=trainingframe, kernel="radial", gamma=1e-06, cost=0.1)
+            summary(model)
+            prediction <- predict(model, testframe)
+            table(pred = prediction, true = testframe[, 1])
+          </pre>
+      <ul>
+        <li>
+          There are five R packages that implement the svm algorithm in R (e1071, kernlab, klaR, svmpath, shogun).
+        </li>
+        <li>
+          I chose e1071 because it seemed like the most inituitive (I also found more documentation on it).
+        </li>
+        <li>
+          I first tuned using true or false as the class lable (true = dengue, false = not dengue) the model so that I could find the best cost and gamma parameters for building the svm with the radial kernel function.
+        </li> 
+        <li>
+          Then I built the multidimensional (16 features, each a two letter word) svm model using those cost and gamma parameters with the training set (6 virus sequence initially then eventually boosted that to 30 viruses).
+        </li>
+      </ul>
+      <footer class="source" style="border-top:10px;">Sources:
+        <a href="http://cran.r-project.org/web/packages/e1071/index.html">e1071</a> -
+        <a href="http://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Classification/SVM">Wikibook: Data Mining in R</a> -
+        <a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/">libsvm</a>
+      </footer>
+    </article>
+  </slide>
+
+  <!-- Slide: Decision Trees -->
+  <slide>
+    <hgroup>
+      <h2>Method: Decision Tree Algorithm</h2>
+      <h3>Decision Trees in R with rpart</h3>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="R">
+        formula <- viruses~aa+ac+ag+at+ca+cc+cg+ct+ga+gc+gg+gt+ta+tc+tg+tt
+        fit <- rpart(formula, method="class", data=dataframe)
+        plotcp(fit)
+        summary(fit)
+        print(fit)
+      </pre>
+      <ul>
+        <li>
+          Initially I wanted to find an implementation of an alternating decision tree in R and found the RWeka package which stems from the weka framework. But I couldn't get the package to work, because I believe it requires an older version of R. 
+        </li>
+        <li>
+          Thus, I ended up using the Rpart package which is good for building basic decision trees for classification and also includes the ability to do regression.
+        </li>
+        <li>
+          Again I used the formula for decision based upon the count of DNA two letter words and used the dengue type viruses as the main focus.  
+        </li>
+        <li>
+          I tested using both true/false class labels and specific virus labels, both of which yielded similar results. 
+        </li>
+      </ul>
+      <footer class="source" style="border-top:10px;">Sources:
+        <a href="http://cran.r-project.org/web/packages/rpart/index.html">rpart</a> -
+        <a href="http://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Classification/SVM">Wikibook: Data Mining in R</a> -
+        <a href="http://cran.r-project.org/web/packages/RWeka/index.html">RWeka</a>
+      </footer>
+    </article>
+  </slide>
+
+  <!-- Overview of R Programming Language -->
+  <slide>
+    <hgroup>
+      <h2>Method: Overview of R</h2><br />
+      <img src="images/200px-Rlogo.png" alt="Herpes Virus Image" title="Picture of Herpes Virus">
+    </hgroup>
+      <article>
+        <ul>
+          <li>
+            Free Software Programming Language for statistical computing.
+          </li>
+          <li>
+            Influenced by the S Programming Language and Scheme.
+          </li>
+          <li>
+            It is part of the GNU project.
+          </li>
+          <li>
+            I chose it because there seemed to be big support in the Bioinformatics community for it with lots of free sources/guides of information.
+          </li>
+          <li>
+            I used it along with R Studio, which is a wonderful IDE/GUI - also free and open source.
+          </li>
+        </ul>
+      </article>
+      <footer class="source">Sources: 
+        <a href="http://developer.r-project.org/Logo/">Picture</a> -
+        <a href="http://www.r-project.org/">R</a> -
+        <a href="http://www.rstudio.com/">R Studio</a> - 
+        <a href="http://en.wikipedia.org/wiki/R_(programming_language)">Wikipedia on R</a>
+      </footer>
+  </slide>
+
+  <!-- Slide: Data Collection: NCBI Database -->
+  <slide>
+    <hgroup>
+      <h2>Data Collection: NCBI Sequence Database</h2>
+      <h3>National Centre for Biotechnology Information (NCBI)</h3>
+    </hgroup>
+    <article class="smaller">
+      <iframe data-src="http://www.ncbi.nlm.nih.gov/" style="width:950px;height:200px;"></iframe>
+      <ul>
+        <li>
+          A large database which houses DNA and protein sequence information.
+        </li>
+        <li>
+          Exchanges data with similar databases in Europe (European Molecular Biology Laboratory - EMBL) and in Japan (DNA Data Bank of Japan - DDBJ)
+        </li>
+        <li>
+          Uses an identifier (accession) for each record of DNA sequence data.
+        </li>
+        <li>
+          Stores and can retrieve the data in FASTA file format.
+        </li>
+      </ul>
+      <footer class="source">Sources:
+        <a href="http://a-little-book-of-r-for-bioinformatics.readthedocs.org/en/latest/src/chapter1.html">Little Book of R for Bioinformatics</a> -
+        <a href="http://www.ncbi.nlm.nih.gov/">NCBI Database</a> -
+        <a href="http://www.ebi.ac.uk/embl/">EMBL Database</a> -
+        <a href="http://www.ddbj.nig.ac.jp/">DDBJ Database</a>
+      </footer>
+    </article>
+  </slide>
+
+  <!-- Slide: Data Collection: FASTA Format -->
+  <slide>
+    <hgroup>
+      <h2>Data Collection: FASTA Format</h2>
+    </hgroup>
+    <article>
+      <ul>
+        <li>
+          Text format for representing and storing DNA sequences
+        </li>
+        <li>
+          The de facto standard in bioinformatics for working with DNA
+        </li>
+        <li>
+          It is a very flexible and straightforward. 
+        </li>
+        <li>
+          Requires only a description line prefixed with (">") and then the data. 
+        </li>
+      </ul>
+      <h3>Example of FASTA:</h3>
+        <pre class="prettyprint" data-lang="FASTA">
+          >DEN-1
+          agttgttagtctacgtggaccgacaagaacagtttcgaatcggaagcttgcttaacgtag
+          ttctaacagttttttattagagagcagatctctgatgaacaaccaacggaaaaagacggg
+          tcgaccgtctttcaatatgctgaaacgcgcgagaaaccgcgtgtcaactgtttcacagtt
+          ggcgaagagattctcaaaaggattgctttcaggccaaggacccatgaaattggtgatggc
+        </pre>
+        <article class="smaller">
+          <p>Above is the first five lines of the Dengue virus (DEN-1) in FASTA Format.</p>
+        </article>
+      <footer class="source">Sources:
+        <a href="http://en.wikipedia.org/wiki/FASTA_format">Wikipedia</a> -
+        <a href="http://www.ncbi.nlm.nih.gov/BLAST/blastcgihelp.shtml">NCBI Database</a>
+      </footer>
+    </article>
+  </slide>
+
+  <!-- Slide: Data Collection: R Script -->
+  <slide>
+    <hgroup>
+      <h2>Data Collection: R for Data Collection</h2>
+      <h3>R Script for Collecting DNA Sequences from NCBI</h3>
+    </hgroup>
+    <article class="smaller">
+        <a href="http://a-little-book-of-r-for-bioinformatics.readthedocs.org/en/latest/src/chapter1.html"/>Script from Little Book of R for Bioinformatics</a>
+        <pre class="prettyprint" data-lang="R">   
+          getncbiseq <- function(accession){
+            require("seqinr") 
+            dbs <- c("genbank", "refseq","refseqViruses","bacterial")
+            numdbs <- length(dbs)
+              for (i in 1:numdbs){
+                db <- dbs[i]
+                choosebank(db)
+                resquery <- try(query(".tmpquery", paste("AC=", accession)), silent=TRUE)
+                if (!(inherits(resquery, "try-error"))){
+                  queryname <- "query2"
+                  thequery <- paste("AC=",accession,sep="")
+                  query(`queryname`,`thequery`)
+                  seq <- getSequence(query2$req[[1]])
+                  closebank()
+                  return(seq)
+                }
+              closebank()
+            }
+          print(paste("ERROR: accession",accession,"was not found"))
+          }
+        </pre>
+    </article>
+  </slide>
+
+  <!-- Slide: Results SVM Algorithm -->
+  <slide>
+    <hgroup>
+      <h2>Results: SVM Algorithm</h2>
+      <h3>Support Vector Machine</h3>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="R">
+        - best performance: 0.25 
+            Confusion Matrices for different training/test sets    
+                true           true
+            pred  F  T     pred  F T            
+               F 24  6        F 16 4
+               T  0  0        T  0 0
+
+                  true          true
+              pred F T      pred F T
+                 F 10 3        F 5 1
+                 T 0 0         T 0 0
+      </pre>
+      <ul>
+        <li>
+          I couldn't seem to get the error rate to drop anywhere below 25%, and tried to tuning the cost and gamma to many different parameters.   
+        </li>
+        <li>
+          Interestingly I always came up with 100% correct classification of false (meaning not dengue type virus) and 100% misclassification of true (meaning is dengue type virus) on my confusion matrices. 
+        </li>
+        <li>
+          The best performance for this approach/method was 25% error prediction rate, with a cost of 0.1 and gamma of 0.1 using a gaussian radial bais function.  
+        </li>
+        <li>
+          My conclusion is that this method needs to be refined and tested with more data. I also might try applying a logarithmic function to the counts to normalize the data. 
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+  <!-- Slide: Results Decision Tree -->
+  <slide>
+    <hgroup>
+      <h2>Results: Decision Tree Algorithm</h2>
+      <h3>Decision Trees</h3>
+    </hgroup>
+    <article class="smaller">
+      <pre class="prettyprint" data-lang="R">
+      predicted class=F  expected loss=0.2727273  P(node) =1
+        class counts:     8     3
+        probabilities: 0.727 0.273
+      Classification tree:
+      Root node error: 3/11 = 0.27273
+      ---
+      Three Node Tree, n=30, error=0.3
+      1) root 30 9 F (0.7000000 0.3000000)  
+      2) aa=1087,12170,18731,23264,270657,333522,695,90 21 0 F (1.0000000 0.0000000) *
+      3) aa=1108,1114,1172 9 0 T (0.0000000 1.0000000) *
+      </pre>
+      <ul>
+        <li>
+          Similar to the svm with this method I couldn't get the error rate to drop below ~27%, and tried different formula's with less features as well as different training set sizes. 
+        </li>
+        <li>
+          The largest size tree (number of nodes) I ended up with was a three node tree with a root and two leafs (for the feature "aa").
+        </li>
+        <li>
+          The best performance for this approach/method was 27% error prediction rate, using a training set of size 11 with a single node tree.  
+        </li>
+        <li>
+          Along the same lines as the svm results I would like to refined this method and test with more data.
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+  <!-- Slide: Results Conclusion and Comparison -->
+  <slide>
+    <hgroup>
+      <h2>Results: Comparison and Conclusion</h2>
+      <h3>SVM vs. Decision Tree</h3>
+    </hgroup>
+    <article class="smaller">
+      <ul>
+        <li>
+          Although my results yielded less in terms of concerete classification, I did get better results with the SVM algorithm (Best Performance - 25%).
+        </li>
+        <li>
+          But the decision tree algorithm was much more flexible in terms of data specification and could be given data sets with less restrictive labels and was still successful in building a tree. 
+        </li>
+        <li>
+          While the initial discovery of the sequence counts seemed to be a good data set and method for virus classification, it needs significant improvement to yield more accurate classification and thus a better analysis of the two machine learning algorithms.
+        </li>
+        <li></li>
+        <li>Ideas for Method Improvement:
+          <ul>
+            <li>
+              Get more data, including non-virus DNA sequences (Pull lots more data - downside is storing all of it locally).
+            </li>
+            <li>
+              Expand basic concept of DNA 2 letter words to K-mers (words the size of k) of variable length with an a dynamic sequence alignment approach.
+            </li>
+            <li>
+              Find or implement a good alternating tree algorithm as well as include Adaboost into methodology with R package - "Ada".
+            </li>
+            <li>
+              Include a feature selection algorithm/parameter to find the best features for classification.
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+  <!-- Slide: Conclusion Overview -->
+  <slide>
+    <hgroup>
+      <h2>Conclusion</h2>
+      <h3>Overview</h3>
+    </hgroup>
+    <article class="smaller">
+      <ul>
+        <li>
+          Viruses are quite fascinating in that they survive and evolve through other living cells as well as having a very rich DNA structure that rivals any other living organism.
+        </li>
+        <li>
+          I think we can learn a great deal through studying them and specifically looking at their DNA/RNA, and many of the Machine Algorithms I looked at are good methods for researching and understanding more about them. 
+        </li>
+        <li>
+          For example, one of the dengue sequences I used, DEN-4 was only just discovered in 2008.
+        </li>
+        <li>
+          Bioinformatics (and specifically DNA analysis) is a growing/emerging field with lots of potential for Machine Learning Applications.
+        </li>
+        <li>Ideas for Expanded Bioinformatics Research:
+          <ul>
+            <li>
+              Evaluate other well known (and lesser known) Machine Learning Approaches.
+            </li>
+            <li>
+              Test more viruses with board variation between DNA strands.
+            </li>
+            <li>
+              Apply a deep learning approach to virus classification.
+            </li>
+            <li>
+              Focus on the ICTV classification system and use ML algorithms to classify viruses with more basis in classical biological classification.  
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </article>
+  </slide>
+
+  <!-- Last Slide: Thank You! -->
+  <slide class="thank-you-slide segue nobackground">
+    <aside class="gdbar right"><img src="images/kpw.png"></aside>
+    <article class="flexbox vleft auto-fadein">
+      <h2>Thank You!</h2>
+      <p>Contact Information for Kevin Westropp:</p>
+    </article>
+    <p class="auto-fadein" data-config-contact>
+      <!-- populated from slide_config.json -->
+    </p>
+  </slide>
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>

@@ -1,4 +1,5 @@
-machine_learning_virus_classification
-=====================================
+Analysis of Machine Learning to virus classification
+---
+This is my final project for CSC 578: Machine Learning.
 
-Machine Learning Final Project on Virus Classification using Machine Learning Techniques - SVM and Decision Trees
+See the Presentation Live [here](http://www.kevinpatrickwestropp.com/machine_learning_virus_classification/)
